@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Cadastrar item · Achados & Perdidos{% endblock %}
+
+{% block content %}
+<div class="pagina-formulario">
+    <a class="voltar" href="{{ url_for('index') }}">← Voltar para o mural</a>
+
+    <div class="formulario-cabecalho">
+        <p class="eyebrow">NOVO REGISTRO</p>
+        <h1>Cadastrar um item</h1>
+        <p>Preencha as informações abaixo para adicionar o item ao mural.</p>
+    </div>
+
+    <form class="formulario" method="POST" enctype="multipart/form-data">
+        <div class="tipo-escolha">
+            <label class="opcao-tipo">
+                <input type="radio" name="tipo" value="perdido" required>
+                <span class="opcao-conteudo">
+                    <span class="opcao-icone">🔎</span>
+                    <span>
+                        <strong>Perdi um item</strong>
+                        <small>Estou procurando algo que perdi.</small>
+                    </span>
+                </span>
+            </label>
+
+            <label class="opcao-tipo">
+                <input type="radio" name="tipo" value="encontrado">
+                <span class="opcao-conteudo">
+                    <span class="opcao-icone">📦</span>
+                    <span>
+                        <strong>Encontrei um item</strong>
+                        <small>Encontrei algo e quero devolver.</small>
+                    </span>
+                </span>
+            </label>
+        </div>
+
+        <div class="campo">
+            <label for="nome">Nome do item *</label>
+            <input id="nome" name="nome" type="text" maxlength="100"
+                   placeholder="Ex.: Chave, mochila, carteira..." required>
+        </div>
+
+        <div class="campo">
+            <label for="descricao">Descrição *</label>
+            <textarea id="descricao" name="descricao" maxlength="500"
+                      placeholder="Descreva o item, cor, marca, características..." required></textarea>
+            <small class="contador"><span id="contador">0</span>/500</small>
+        </div>
+
+        <div class="linha-campos">
+            <div class="campo">
+                <label for="local">Local *</label>
+                <input id="local" name="local" type="text" maxlength="150"
+                       placeholder="Ex.: Biblioteca, sala 12..." required>
+            </div>
+
+            <div class="campo">
+                <label for="contato">Contato *</label>
+                <input id="contato" name="contato" type="text" maxlength="150"
+                       placeholder="Ex.: nome@email.com ou telefone" required>
+            </div>
+        </div>
+
+        <div class="campo">
+            <label for="imagem">Imagem <span>(opcional)</span></label>
+            <label class="upload">
+                <input id="imagem" name="imagem" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+                <span class="upload-icone">↑</span>
+                <span>
+                    <strong id="nome-arquivo">Clique para selecionar uma imagem</strong>
+                    <small>PNG, JPG, JPEG, GIF ou WEBP</small>
+                </span>
+            </label>
+        </div>
+
+        <div class="acoes-formulario">
+            <a class="botao botao-secundario" href="{{ url_for('index') }}">Cancelar</a>
+            <button class="botao botao-principal" type="submit">Cadastrar item</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

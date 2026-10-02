@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Mural · Achados & Perdidos{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <p class="eyebrow">MURAL DA COMUNIDADE</p>
+        <h1>Encontrou ou perdeu alguma coisa?</h1>
+        <p class="hero-text">
+            Cadastre o item e ajude a encontrar o dono. O mural reúne objetos
+            perdidos e encontrados em um só lugar.
+        </p>
+    </div>
+    <div class="hero-icon">🔎</div>
+</section>
+
+<section class="ferramentas">
+    <form class="busca" method="GET" action="{{ url_for('index') }}">
+        <input type="hidden" name="filtro" value="{{ filtro }}">
+        <span>⌕</span>
+        <input
+            type="text"
+            name="busca"
+            placeholder="Buscar por nome, descrição ou local..."
+            value="{{ busca }}"
+        >
+        {% if busca %}
+            <a class="limpar" href="{{ url_for('index', filtro=filtro) }}">×</a>
+        {% endif %}
+        <button type="submit">Buscar</button>
+    </form>
+
+    <div class="filtros">
+        <a class="{{ 'ativo' if filtro == 'todos' else '' }}"
+           href="{{ url_for('index', filtro='todos', busca=busca) }}">Todos</a>
+        <a class="{{ 'ativo' if filtro == 'perdido' else '' }}"
+           href="{{ url_for('index', filtro='perdido', busca=busca) }}">Perdidos</a>
+        <a class="{{ 'ativo' if filtro == 'encontrado' else '' }}"
+           href="{{ url_for('index', filtro='encontrado', busca=busca) }}">Encontrados</a>
+    </div>
+</section>
+
+<div class="titulo-lista">
+    <div>
+        <h2>Itens do mural</h2>
+        <p>{{ itens|length }} item(ns) encontrado(s)</p>
+    </div>
+</div>
+
+{% if itens %}
+<div class="grid">
+    {% for item in itens %}
+    <article class="card {{ 'resolvido' if item['resolvido'] else '' }}">
+        {% if item['imagem'] %}
+            <div class="imagem-card">
+                <img src="{{ url_for('static', filename='uploads/' + item['imagem']) }}" alt="Imagem de {{ item['nome'] }}">
+            </div>
+        {% else %}
+            <div class="imagem-placeholder">
+                {{ "📦" if item['tipo'] == "encontrado" else "🔎" }}
+            </div>
+        {% endif %}
+
+        <div class="card-corpo">
+            <div class="card-topo">
+                <span class="badge {{ item['tipo'] }}">
+                    {{ "PERDIDO" if item['tipo'] == "perdido" else "ENCONTRADO" }}
+                </span>
+                {% if item['resolvido'] %}
+                    <span class="badge resolvido-badge">✓ RESOLVIDO</span>
+                {% endif %}
+            </div>
+
+            <h3>{{ item['nome'] }}</h3>
+            <p class="descricao">{{ item['descricao'] }}</p>
+
+            <div class="info">
+                <p><span>📍</span><strong>Local:</strong> {{ item['local'] }}</p>
+                <p><span>✉</span><strong>Contato:</strong> {{ item['contato'] }}</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('resolver', item_id=item['id']) }}">
+                <button class="botao-status {{ 'desfazer' if item['resolvido'] else '' }}" type="submit">
+                    {{ "↩ Reabrir item" if item['resolvido'] else "✓ Marcar como devolvido / resolvido" }}
+                </button>
+            </form>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<div class="vazio">
+    <div>🔎</div>
+    <h3>Nenhum item encontrado</h3>
+    <p>Não encontramos itens com esses filtros. Que tal cadastrar um novo?</p>
+    <a class="botao" href="{{ url_for('cadastrar') }}">+ Cadastrar item</a>
+</div>
+{% endif %}
+{% endblock %}
